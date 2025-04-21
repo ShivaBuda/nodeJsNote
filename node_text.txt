@@ -1,0 +1,1 @@
+Hello, World! This code will create a node_text.txt file. To run this code type this command 'node index.js.' This is the second line of text added at the end with appendFile method.
