@@ -10,18 +10,31 @@ const rl = readline.createInterface({
     output: process.stdout,
 });
 
-https.get(API_URL, (respond) => {
-    respond.on("data", (chunk) => {
+https.get(API_URL, (response) => {
+    let data = "";
+    response.on("data", (chunk) => {
         data += chunk;
     });
 
-    respond.on("end", () => {
-        const currencyData = JSON.parse(data).conversion_rates;
-        rl.question("Enter the amnount in USD:", (usdAmount) => {
+    response.on("end", () => {
+        const currencyRates = JSON.parse(data).conversion_rates;
+        rl.question("Enter the amnount in USD:", (amount) => {
             rl.question(
                 "Enter the currency code (e.g EUR, GBP):",
                 (currencyCode) => {
-                    
+                    const rate = currencyRates[currencyCode.toUpperCase()];
+                    if (rate) {
+                        console.log(
+                            `${chalk.green("Converted amount:")} ${
+                                amount * rate
+                            }${currencyCode.toUpperCase()}`,
+                        );
+                    } else {
+                        console.log(
+                            `${chalk.red("Error:")} Invalid currency code`,
+                        );
+                    }
+                    rl.close();
                 },
             );
         });
